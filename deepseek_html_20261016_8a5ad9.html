@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Visual.Studio — Wes Anderson Lab</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;background:#0a0a0a;color:#f1f5f9;min-height:100vh;padding:1rem 1rem 12rem;font-size:14px;line-height:1.5}
+.wrap{max-width:1400px;margin:0 auto}
+header{text-align:center;padding:1.5rem 0;border-bottom:1px solid #2a2a2a;margin-bottom:1.5rem}
+h1{font-family:Futura,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:2rem;font-weight:300;letter-spacing:.1em;margin-bottom:.4rem;color:#f0d8c0;text-transform:uppercase}
+.sub{font-family:Futura,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.8rem;color:#8a7a68;letter-spacing:.15em;text-transform:uppercase}
+.kata{font-size:.7rem;letter-spacing:.4em;color:#e8a76a;opacity:.75;text-transform:uppercase;margin-bottom:.5rem}
+.banner{background:linear-gradient(135deg,rgba(232,167,106,.06),rgba(200,120,150,.05));border:1px solid #2a2a2a;border-left:2px solid #e8a76a;border-radius:4px;padding:1rem 1.15rem;font-size:.78rem;color:#a89580;margin-bottom:1.2rem;line-height:1.6}
+.banner strong{color:#f1f5f9;font-weight:600}
+.banner .hl-v{color:#f0c890}.banner .hl-e{color:#a8d8c8}.banner .hl-a{color:#e8a76a}
+.card{background:#141414;border:1px solid #2a2a2a;border-radius:4px;margin-bottom:1rem;overflow:hidden}
+.card-head{padding:.85rem 1rem;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;font-size:.72rem;text-transform:uppercase;letter-spacing:.15em;color:#e2e8f0;font-weight:600}
+.card-head .badge{font-size:.6rem;padding:.15rem .5rem;border:1px solid #b45309;color:#e8a76a;border-radius:2px;letter-spacing:.1em}
+.card-body{padding:1rem}
+textarea,input[type=text],input[type=number],select{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:.7rem .85rem;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.78rem;color:#f1f5f9;outline:none}
+textarea:focus,input:focus,select:focus{border-color:#e8a76a;box-shadow:0 0 0 3px rgba(232,167,106,.12)}
+textarea{min-height:80px;resize:vertical;line-height:1.55}
+textarea:disabled,input:disabled,select:disabled{opacity:.5;cursor:not-allowed}
+.btn{width:100%;padding:.75rem;border-radius:4px;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;border:1px solid;transition:all .15s}
+.btn-amber{background:linear-gradient(135deg,rgba(232,167,106,.15),rgba(200,150,90,.1));border-color:#8a5a2a;color:#f0c890}
+.btn-amber:hover:not(:disabled){background:rgba(232,167,106,.2)}
+.btn-amber:disabled{opacity:.3;cursor:not-allowed}
+.btn-slate{background:transparent;border-color:#3a3a3a;color:#a89580;font-size:.68rem;padding:.55rem}
+.btn-slate:hover:not(:disabled){color:#f87171;border-color:#b91c1c}
+.btn-slate:disabled{opacity:.4;cursor:not-allowed}
+.btn-green{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(52,211,153,.1));border-color:#065f46;color:#34d399}
+.btn-green:hover:not(:disabled){background:rgba(16,185,129,.2)}
+.btn-green:disabled{opacity:.4;cursor:not-allowed}
+.btn-violet{background:linear-gradient(135deg,rgba(232,167,106,.18),rgba(200,120,150,.12));border-color:#8a5a2a;color:#f0c890}
+.btn-violet:hover:not(:disabled){background:rgba(232,167,106,.22)}
+.row{display:flex;gap:.5rem;margin-top:.6rem}
+.status-line{display:flex;align-items:center;gap:.5rem;padding:.6rem .85rem;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;font-size:.75rem;color:#8a7a68;margin-top:.7rem}
+.status-line.ok{background:rgba(16,185,129,.08);border-color:#065f46;color:#34d399}
+.status-line.err{background:rgba(239,68,68,.08);border-color:#7f1d1d;color:#f87171}
+.status-line.warn{background:rgba(232,167,106,.08);border-color:#78350f;color:#f0c890}
+.status-line .dot{width:6px;height:6px;border-radius:50%;background:#555;flex-shrink:0}
+.status-line.ok .dot{background:#10b981;box-shadow:0 0 6px #10b981}
+.status-line.err .dot{background:#ef4444}
+.status-line.warn .dot{background:#e8a76a}
+.hint{font-size:.7rem;color:#8a7a68;margin-top:.5rem}
+.drop{border:2px dashed #3a3a3a;border-radius:4px;padding:1.5rem 1rem;text-align:center;cursor:pointer;position:relative;transition:all .15s;display:block}
+.drop:hover{border-color:#e8a76a;background:rgba(232,167,106,.04)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .icon{font-size:2rem;opacity:.5;margin-bottom:.4rem}
+.drop .txt{font-size:.82rem;color:#a89580}
+.drop .txt strong{color:#f0c890}
+.drop .sub{font-size:.68rem;color:#5a5a5a;margin-top:.4rem;font-family:ui-monospace,monospace}
+.preview{margin-top:.8rem;text-align:center}
+.preview img{max-width:100%;max-height:240px;border:1px solid #2a2a2a;border-radius:4px;display:block;margin:0 auto}
+.preview .name{font-size:.66rem;color:#f0c890;font-family:ui-monospace,monospace;margin-top:.4rem}
+.analysis{background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:.75rem;margin-top:.7rem;font-size:.7rem;font-family:ui-monospace,monospace;color:#a89580;max-height:280px;overflow-y:auto;white-space:pre-wrap;display:none}
+.analysis.visible{display:block}
+.analysis .k{color:#e8a76a;font-weight:700}
+.phase{background:#141414;border:1px solid #2a2a2a;border-left:2px solid #e8a76a;border-radius:4px;padding:.85rem 1rem;margin-bottom:1rem;display:none}
+.phase.visible{display:block}
+.phase-info{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;font-size:.72rem;font-family:ui-monospace,monospace;color:#a89580}
+.queue{display:none;background:#141414;border:1px solid #2a2a2a;border-left:2px solid #e8a76a;border-radius:4px;padding:.7rem .9rem;margin-bottom:1rem;font-size:.72rem;font-family:ui-monospace,monospace}
+.queue.visible{display:block}
+
+.tabs{display:flex;flex-wrap:wrap;gap:.35rem;padding:.4rem 0;margin-bottom:1rem;border-bottom:1px solid #2a2a2a}
+.tab{padding:.5rem .75rem;font-size:.7rem;border:1px solid #2a2a2a;border-radius:4px;background:#141414;color:#a89580;cursor:pointer;display:flex;gap:.4rem;align-items:center;transition:all .15s;position:relative}
+.tab:hover{border-color:#3a3a3a;color:#e2e8f0}
+.tab.active{border-color:#e8a76a;color:#f0c890;background:rgba(232,167,106,.08)}
+.tab.has-content{border-color:#8a5a2a;background:rgba(232,167,106,.05)}
+.tab.done{border-color:#065f46;background:rgba(16,185,129,.05)}
+.tab .count{font-family:ui-monospace,monospace;font-size:.58rem;color:#8a7a68;background:#0a0a0a;padding:.05rem .3rem;border-radius:2px}
+.tab.active .count{color:#f0c890;background:rgba(232,167,106,.12)}
+.tab.done .count{color:#34d399;background:rgba(16,185,129,.1)}
+.tab .icon{font-size:.85rem}
+.tab .close{position:absolute;top:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:#7f1d1d;color:#fff;font-size:10px;line-height:14px;text-align:center;cursor:pointer;border:1px solid #ef4444}
+.tab .close:hover{background:#ef4444}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.tab-control{background:#141414;border:1px solid #2a2a2a;border-left:3px solid #e8a76a;border-radius:4px;padding:.85rem 1rem;margin-bottom:1rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end}
+.tab-control .field{flex:1;min-width:120px}
+.tab-control label{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:#8a7a68;margin-bottom:.3rem;font-family:ui-monospace,monospace}
+.tab-control input[type=number]{width:100%}
+.tab-control .btn{width:auto;min-width:180px;padding:.75rem 1rem}
+.tab-control .info{font-size:.68rem;color:#8a7a68;font-family:ui-monospace,monospace;margin-bottom:.3rem}
+.tab-control .info strong{color:#f0c890}
+
+.grid{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:1.5rem}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr}}
+@media(min-width:1400px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+.photo{background:#141414;border:1px solid #2a2a2a;border-radius:4px;overflow:hidden}
+.photo-img{aspect-ratio:9/16;background:#000;display:flex;align-items:center;justify-content:center;position:relative}
+.photo-img img{width:100%;height:100%;object-fit:contain;display:block}
+.photo-img .load{width:100%;height:100%;background:#0a0a0a;display:flex;align-items:center;justify-content:center;color:#5a5a5a;font-size:.72rem;font-family:ui-monospace,monospace;position:relative;overflow:hidden}
+.photo-img .load::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(232,167,106,.06) 50%,transparent 70%);animation:shim 1.8s linear infinite}
+@keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.photo-img .err{width:100%;height:100%;background:rgba(127,29,29,.2);display:flex;align-items:center;justify-content:center;color:#f87171;font-size:.72rem;text-align:center;padding:.6rem}
+.photo-meta{padding:.7rem;border-top:1px solid #2a2a2a}
+.pbadge{display:inline-block;font-size:.55rem;text-transform:uppercase;letter-spacing:.12em;padding:.12rem .45rem;border-radius:2px;margin-right:.3rem;margin-bottom:.4rem;font-weight:700;border:1px solid}
+.pbadge.cat{background:rgba(232,167,106,.1);color:#f0c890;border-color:#8a5a2a}
+.pbadge.num{background:rgba(245,158,11,.1);color:#fbbf24;border-color:#92400e}
+.pbadge.rule{background:rgba(16,185,129,.1);color:#34d399;border-color:#065f46}
+.ptitle{font-family:Futura,'Helvetica Neue',sans-serif;font-size:.82rem;color:#f0c890;margin-bottom:.3rem;letter-spacing:.05em;text-transform:uppercase}
+.psub{font-size:.62rem;color:#c9a888;font-style:italic;margin-bottom:.5rem;line-height:1.4}
+.pblock{background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:.55rem;position:relative}
+.plabel{font-size:.55rem;text-transform:uppercase;letter-spacing:.12em;color:#8a7a68;font-family:ui-monospace,monospace;margin-bottom:.35rem}
+.ptext{font-size:.6rem;color:#a89580;font-family:ui-monospace,monospace;line-height:1.45;max-height:150px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;padding-right:3.5rem}
+.pcopy{position:absolute;top:.4rem;right:.4rem;font-size:.55rem;padding:.12rem .4rem;border:1px solid #3a3a3a;border-radius:2px;background:transparent;color:#8a7a68;cursor:pointer}
+.pcopy:hover{color:#f0c890;border-color:#8a5a2a}
+.popen{display:block;text-align:center;margin-top:.5rem;font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;padding:.4rem;border:1px solid #3a3a3a;border-radius:4px;color:#a89580;text-decoration:none}
+.popen:hover{color:#f0c890;border-color:#8a5a2a}
+
+.custom-builder{background:#141414;border:1px solid #2a2a2a;border-left:3px solid #e8a76a;border-radius:4px;padding:1.1rem;margin-bottom:1rem}
+.custom-builder h3{font-family:Futura,'Helvetica Neue',sans-serif;color:#f0c890;font-size:1rem;margin-bottom:.4rem;font-weight:400;text-transform:uppercase;letter-spacing:.1em}
+.custom-builder p{font-size:.72rem;color:#a89580;margin-bottom:.8rem}
+.custom-builder .field{margin-bottom:.6rem}
+.custom-builder label{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:#8a7a68;margin-bottom:.3rem;font-family:ui-monospace,monospace}
+
+.gender-override{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;align-items:center;background:#0a0a0a;border:1px solid #2a2a2a;border-left:3px solid #e8a76a;border-radius:4px;padding:.65rem .85rem}
+.gender-override .lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:#8a7a68;font-family:ui-monospace,monospace}
+.gender-override .opt{flex:1;min-width:80px;padding:.5rem .7rem;font-size:.75rem;font-weight:700;letter-spacing:.08em;border-radius:4px;cursor:pointer;border:1px solid #3a3a3a;background:transparent;color:#a89580;text-align:center;transition:all .15s}
+.gender-override .opt:hover{border-color:#e8a76a;color:#f0c890}
+.gender-override .opt.active{background:rgba(232,167,106,.15);border-color:#e8a76a;color:#f0c890}
+
+.panel{position:fixed;bottom:0;left:0;right:0;z-index:40}
+.handle{background:#141414;border-top:2px solid #e8a76a;padding:.55rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.handle .left{display:flex;align-items:center;gap:.6rem;min-width:0;flex:1}
+.handle .toggle{font-family:ui-monospace,monospace;font-size:.72rem;color:#f0c890;letter-spacing:.1em}
+.handle .latest{font-size:.72rem;color:#a89580;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.handle .actions{display:flex;gap:.3rem}
+.handle .actions button{font-size:.6rem;padding:.2rem .5rem;border:1px solid #3a3a3a;border-radius:3px;background:transparent;color:#8a7a68;cursor:pointer}
+.handle .actions button:hover{color:#f0c890;border-color:#8a5a2a}
+.panel-content{background:#0a0a0a;border-top:1px solid #2a2a2a;max-height:60vh;overflow-y:auto}
+.panel-content.hidden{display:none}
+.human-log{max-height:100px;overflow-y:auto;padding:.6rem 1rem;border-bottom:1px solid #2a2a2a;font-family:ui-monospace,monospace;font-size:.7rem}
+.human-log>div{margin-bottom:.2rem}
+.human-log .t{color:#555}
+.human-log .m{color:#34d399}
+.debug-log{max-height:240px;overflow-y:auto;padding:.6rem 1rem;font-family:ui-monospace,monospace;font-size:.68rem}
+.debug-log>div{margin-bottom:.15rem;word-break:break-word}
+.debug-log .t{color:#555}
+.debug-log .info{color:#a89580}
+.debug-log .ok{color:#34d399}
+.debug-log .warn{color:#f0c890}
+.debug-log .err{color:#f87171}
+.debug-log .api{color:#60a5fa}
+.toast{position:fixed;top:1rem;left:50%;transform:translateX(-50%) translateY(-120px);background:#141414;border:1px solid #2a2a2a;border-left:3px solid #f0c890;border-radius:4px;padding:.75rem 1.2rem;font-size:.8rem;z-index:1000;opacity:0;transition:transform .3s,opacity .3s;max-width:90vw;text-align:center}
+.toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-left-color:#10b981}
+.toast.error{border-left-color:#ef4444}
+.toast.warn{border-left-color:#e8a76a}
+.status-bar{position:fixed;bottom:60px;left:0;right:0;background:#141414;border-top:1px solid #2a2a2a;padding:.5rem 1rem;font-size:.7rem;font-family:ui-monospace,monospace;color:#f1f5f9;display:flex;align-items:center;gap:.5rem;transform:translateY(100%);transition:transform .3s;z-index:30}
+.status-bar.visible{transform:translateY(0)}
+.status-bar .spinner{width:12px;height:12px;border:2px solid rgba(232,167,106,.2);border-top-color:#e8a76a;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#141414}
+::-webkit-scrollbar-thumb{background:#3a3a3a;border-radius:3px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<div class="kata">武 · Visual.Studio · Wes Anderson Lab</div>
+<h1>Visual.Studio</h1>
+<p class="sub">Affiches de films Wes Anderson · photographie argentique 35 mm · 40 décors</p>
+</header>
+
+<div class="banner">
+<strong>Wes Anderson Lab :</strong> 1) collez vos <strong class="hl-v">clés API</strong> et l'image de votre <strong class="hl-e">actrice</strong>. 2) Cliquez <strong class="hl-a">« Analyser »</strong> une fois. 3) Chaque onglet est un <strong>décor / film de Wes Anderson</strong> — chacun génère une <strong>affiche de film</strong> avec titre et bloc de crédits. <br><strong>Rendu garanti :</strong> photographie cinéma argentique 35 mm (Kodak Vision3), grain naturel, halation, colorimétrie analogique, compositions symétriques, palette pastel. <strong>Aucun aspect numérique, aucun art numérique, aucun CGI, aucune illustration.</strong>
+</div>
+
+<section class="card">
+<div class="card-head"><span>🔑 Clés API Agnes</span><span class="badge" id="keyBadge">0 validée</span></div>
+<div class="card-body">
+<textarea id="keysInput" placeholder="Collez vos clés API ici, une par ligne :&#10;sk-xxxxxxxxxxxx&#10;sk-yyyyyyyyyyyy" autocomplete="off" spellcheck="false"></textarea>
+<div class="row">
+<button class="btn btn-amber" id="validateBtn">🔐 Valider et enregistrer</button>
+<button class="btn btn-slate" id="clearBtn" style="width:auto;min-width:80px;">Effacer</button>
+</div>
+<div class="status-line" id="keyStatus"><span class="dot"></span><span id="keyStatusText">Aucune clé enregistrée</span></div>
+<div class="hint">Paceur automatique : ~12 requêtes/min par clé · rotation intelligente · cooldown auto sur 429.</div>
+</div>
+</section>
+
+<section class="card">
+<div class="card-head"><span>🖼️ Image du personnage</span><span class="badge" id="refBadge">0 image</span></div>
+<div class="card-body">
+<label class="drop">
+<input type="file" accept="image/*" id="refInput">
+<div class="icon">📷</div>
+<div class="txt"><strong>Cliquez pour choisir une image</strong><br>L'actrice à décliner</div>
+<div class="sub">Analyse : visage · corps · tenue — verrouillés pour toutes les affiches.</div>
+</label>
+<div class="preview hidden" id="refPreview">
+<img id="refPreviewImg" alt="">
+<div class="name" id="refPreviewName"></div>
+<div class="row" style="justify-content:center;">
+<button class="btn btn-amber" id="analyzeBtn" style="max-width:220px;">🔍 Analyser l'image</button>
+<button class="btn btn-slate" id="removeRefBtn" style="max-width:120px;">Retirer</button>
+</div>
+</div>
+<div class="gender-override" id="genderOverride" style="display:none;">
+<span class="lbl">Sexe verrouillé :</span>
+<button class="opt" data-gender="female">♀ Femme</button>
+<button class="opt" data-gender="male">♂ Homme</button>
+</div>
+<div class="analysis" id="analysisBox"></div>
+</div>
+</section>
+
+<section class="card">
+<div class="card-head"><span>✍️ Contexte additionnel (optionnel)</span><span class="badge" id="promptBadge">0 mot</span></div>
+<div class="card-body">
+<textarea id="promptInput" placeholder="Ambiance, époque, mood additionnel… Sert d'enrichissement pour tous les onglets." rows="2" spellcheck="false"></textarea>
+</div>
+</section>
+
+<div class="phase" id="phaseBar">
+<div class="phase-info"><span id="phaseDetail">En attente</span><span id="phaseEta"></span></div>
+</div>
+
+<div class="queue" id="queue"></div>
+
+<div class="tabs" id="tabs"></div>
+
+<div id="tabContents"></div>
+
+</div>
+
+<div class="panel">
+<div class="handle" id="panelHandle">
+<div class="left">
+<span class="toggle" id="panelToggle">▼ CONSOLE</span>
+<span class="latest" id="humanLatest">Prêt.</span>
+</div>
+<div class="actions">
+<button id="copyConsoleBtn">Copier</button>
+<button id="clearConsoleBtn">Effacer</button>
+</div>
+</div>
+<div class="panel-content hidden" id="panelContent">
+<div class="human-log" id="humanLog"></div>
+<div class="debug-log" id="debugLog"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"><span id="toastText">Message</span></div>
+<div class="status-bar" id="statusBar"><div class="spinner"></div><span id="statusText">Préparation…</span></div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIG — PACING RPM
+// ═══════════════════════════════════════════════════════════════
+const API_BASE = 'https://apihub.agnes-ai.com/v1';
+const MODEL_TEXT = 'agnes-2.5-flash';
+const MODEL_IMAGE = 'agnes-image-2.1-flash';
+const IMAGE_SIZE = '1024x1792';
+
+const MIN_INTERVAL_PER_KEY_MS = 5000;  // 12 RPM/clé
+const CONCURRENCY_PER_KEY = 2;
+const COOLDOWN_DEFAULT_MS = 65000;
+
+const REF_MAX_SIDE = 1280;
+const KEYS_STORAGE = 'vsWA_keys';
+const PROMPT_STORAGE = 'vsWA_prompt';
+const REF_STORAGE = 'vsWA_ref';
+const CUSTOM_STORAGE = 'vsWA_custom';
+const DEBUG_MAX = 500;
+
+// ═══════════════════════════════════════════════════════════════
+// POSES — pool partagé
+// ═══════════════════════════════════════════════════════════════
+const POSES = [
+  'standing upright facing camera, direct eye contact, deadpan neutral expression',
+  'perfectly centered medium close-up, deadpan expression, looking straight at camera',
+  'perfectly centered full body shot, arms at the sides, deadpan',
+  'three-quarter turn, hands folded in front, deadpan',
+  'seated perfectly centered on a chair, hands on knees, deadpan',
+  'leaning against a wall, symmetrical, deadpan',
+  'walking toward the camera, mid-stride, symmetrical framing',
+  'back turned, looking over the shoulder, symmetrical',
+  'standing with a prop held perfectly centered',
+  'extreme close-up on the face only, perfectly centered',
+  'medium shot from the waist up, symmetrical, deadpan',
+  'wide environmental shot, subject centered in the frame',
+  'low angle symmetrical view from below',
+  'high angle symmetrical view from above',
+  'two-shot symmetrical composition with a companion',
+  'seated at a table, symmetrical, hands visible',
+  'standing in a doorway, symmetrical, deadpan',
+  'caught mid-action, deadpan, symmetrical'
+];
+
+// ═══════════════════════════════════════════════════════════════
+// BASE STYLE — SIGNATURE WES ANDERSON + ARGENTIQUE 35 MM
+// ═══════════════════════════════════════════════════════════════
+const WA_BASE = 'Wes Anderson cinema poster, film directed by Wes Anderson, cinematography by Robert Yeoman, shot on 35mm Kodak Vision3 500T color negative film stock with anamorphic Panavision lens, fine natural film grain, halation, subtle dust and gate weave, analog color grading with pastel palette (dusty pink, mint green, mustard yellow, lavender, cream, ochre), perfectly symmetrical centered composition, strict one-point perspective, meticulous production design, deadpan expression, vintage Futura typography. This is a REAL ANALOG PHOTOGRAPH taken on a film set with real actors in costume on real physical sets with practical lighting — NOT a digital illustration, NOT CGI, NOT 3D render, NOT anime, NOT vector art, NOT painting, NOT concept art, NOT digital art. Photographic realism only, cinematic film still quality.';
+
+// ═══════════════════════════════════════════════════════════════
+// 40 CATÉGORIES WES ANDERSON — chacune = une affiche de film
+// ═══════════════════════════════════════════════════════════════
+const CATEGORIES = [
+  { id:'gb-hotel',        name:'Grand Budapest — Hôtel',        icon:'🏨', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: the pink cake-box facade of a grand alpine hotel in the 1930s, snow-covered slopes, a red funicular, symmetrical framing, deep crimson carpet at the entrance, brass details, deadpan concierge in purple uniform.' },
+  { id:'gb-lobby',        name:'Grand Budapest — Lobby',        icon:'🛎️', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: opulent 1930s grand hotel lobby, deep red patterned carpet, marble columns, symmetrical concierge desk, crystal chandelier, bellboys in purple, deadpan guests in furs.' },
+  { id:'gb-stairs',       name:'Grand Budapest — Escalier',     icon:'🪜', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: grand symmetrical hotel staircase, mint green and dusty pink walls, brass railing, fresco ceiling, deadpan staff descending in perfect formation.' },
+  { id:'gb-elevator',     name:'Grand Budapest — Ascenseur',    icon:'🛗', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: vintage brass-cage hotel elevator interior, symmetrical, mirror panels, single deadpan passenger, dust in the light beam.' },
+  { id:'gb-concierge',    name:'Grand Budapest — Concierge',    icon:'🎩', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: perfectly centered portrait of a 1930s hotel concierge in purple uniform with the crossed-keys emblem, deadpan expression, patterned wallpaper behind.' },
+  { id:'mr-beach',        name:'Moonrise Kingdom — Plage',      icon:'🏕️', kind:'poster', title:'MOONRISE KINGDOM',                 style: WA_BASE + ' SCENE: khaki scout uniform on a rocky New England cove, canvas tents, autumn field, deadpan young scout pose, small chapel in the distance.' },
+  { id:'mr-chapel',       name:'Moonrise Kingdom — Chapelle',   icon:'⛪', kind:'poster', title:'MOONRISE KINGDOM',                 style: WA_BASE + ' SCENE: small wooden chapel interior, stained glass windows, deadpan bride and groom, symmetrical rows of scouts, warm candlelight.' },
+  { id:'mr-lighthouse',   name:'Moonrise Kingdom — Phare',      icon:'🗼', kind:'poster', title:'MOONRISE KINGDOM',                 style: WA_BASE + ' SCENE: a small New England lighthouse on a rocky point, stormy pastel sky, khaki scout on the rocks, deadpan, symmetrical composition.' },
+  { id:'rt-townhouse',    name:'Tenenbaums — Maison',           icon:'🏠', kind:'poster', title:'THE ROYAL TENENBAUMS',             style: WA_BASE + ' SCENE: brownstone New York townhouse exterior, autumn leaves, symmetrical facade, deadpan family on the stoop in eclectic 1970s fashion.' },
+  { id:'rt-tennis',       name:'Tenenbaums — Tennis',           icon:'🎾', kind:'poster', title:'THE ROYAL TENENBAUMS',             style: WA_BASE + ' SCENE: green tennis court, deadpan champion in a striped headband and tennis whites, symmetrical court lines converging on the subject.' },
+  { id:'rt-livingroom',   name:'Tenenbaums — Salon',            icon:'🛋️', kind:'poster', title:'THE ROYAL TENENBAUMS',             style: WA_BASE + ' SCENE: eccentric 1970s Manhattan living room, patterned wallpaper, eclectic art and taxidermy, deadpan family portrait in a symmetrical group arrangement.' },
+  { id:'rt-tent',         name:'Tenenbaums — Tente',            icon:'⛺', kind:'poster', title:'THE ROYAL TENENBAUMS',             style: WA_BASE + ' SCENE: a tent pitched inside a living room, deadpan child inside, warm practical lamp, symmetrical composition, 1970s interiors.' },
+  { id:'la-ship',         name:'Life Aquatic — Navire',         icon:'🚢', kind:'poster', title:'THE LIFE AQUATIC',                 style: WA_BASE + ' SCENE: bow of the Belafonte research vessel on a calm turquoise sea, red beanies, Team Zissou crew, deadpan explorers, symmetrical deck lines.' },
+  { id:'la-sub',          name:'Life Aquatic — Sous-marin',     icon:'🟨', kind:'poster', title:'THE LIFE AQUATIC',                 style: WA_BASE + ' SCENE: yellow submarine interior, round portholes, deep teal ocean beyond, symmetrical deadpan crew in red beanies, practical instrument lights.' },
+  { id:'la-diving',       name:'Life Aquatic — Plongée',        icon:'🤿', kind:'poster', title:'THE LIFE AQUATIC',                 style: WA_BASE + ' SCENE: deadpan diver in vintage gear underwater, spotted rays, symmetrical composition, teal ocean, pastel light from above.' },
+  { id:'dl-train',        name:'Darjeeling — Train',            icon:'🚂', kind:'poster', title:'THE DARJEELING LIMITED',           style: WA_BASE + ' SCENE: vintage Indian train compartment interior, exotic leather luggage, three deadpan brothers in matching suits, warm mustard tones, symmetrical framing.' },
+  { id:'dl-station',      name:'Darjeeling — Gare',             icon:'🚉', kind:'poster', title:'THE DARJEELING LIMITED',           style: WA_BASE + ' SCENE: busy Indian railway station, steam train, colorful crowd, symmetrical platform, deadpan brothers with their matching luggage.' },
+  { id:'dl-temple',       name:'Darjeeling — Temple',           icon:'🛕', kind:'poster', title:'THE DARJEELING LIMITED',           style: WA_BASE + ' SCENE: hilltop Indian temple, prayer flags, deadpan brothers in matching suits at the summit, symmetrical composition, soft Himalayan light.' },
+  { id:'rm-school',       name:'Rushmore — École',              icon:'🎓', kind:'poster', title:'RUSHMORE',                          style: WA_BASE + ' SCENE: ivy-covered New England prep school, blazer and tie uniform, deadpan student, autumn campus, symmetrical brick facade.' },
+  { id:'rm-theater',      name:'Rushmore — Théâtre',            icon:'🎭', kind:'poster', title:'RUSHMORE',                          style: WA_BASE + ' SCENE: school theater stage, red curtain, single spotlight, deadpan young actor in a school play, symmetrical proscenium.' },
+  { id:'rm-library',      name:'Rushmore — Bibliothèque',       icon:'📚', kind:'poster', title:'RUSHMORE',                          style: WA_BASE + ' SCENE: wood-paneled prep school library, towering bookshelves, warm lamp, deadpan student in blazer reading, symmetrical.' },
+  { id:'br-motel',        name:'Bottle Rocket — Motel',         icon:'🌵', kind:'poster', title:'BOTTLE ROCKET',                     style: WA_BASE + ' SCENE: 1990s Texas highway motel, yellow jumpsuit, deadpan young dreamer, desert highway, symmetrical framing.' },
+  { id:'fd-office',       name:'French Dispatch — Bureau',      icon:'📰', kind:'poster', title:'THE FRENCH DISPATCH',              style: WA_BASE + ' SCENE: French magazine editorial office, cluttered desks, vintage typewriters, deadpan writers in mid-century Parisian fashion, symmetrical.' },
+  { id:'fd-revolution',   name:'French Dispatch — Révolte',     icon:'✊', kind:'poster', title:'THE FRENCH DISPATCH',              style: WA_BASE + ' SCENE: French student revolution, chalkboard with slogans, barricades, deadpan young rebels, pastel tones, symmetrical.' },
+  { id:'fd-cafe',         name:'French Dispatch — Café',        icon:'☕', kind:'poster', title:'THE FRENCH DISPATCH',              style: WA_BASE + ' SCENE: Parisian bistro interior, black-and-white checkered floor, mustachioed waiters, deadpan patrons, symmetrical, warm lamp glow.' },
+  { id:'fd-bathhouse',    name:'French Dispatch — Bains',       icon:'🛁', kind:'poster', title:'THE FRENCH DISPATCH',              style: WA_BASE + ' SCENE: vintage Parisian bathhouse, blue tiled walls, deadpan bathers, symmetrical row of tubs, steam in the air.' },
+  { id:'ac-desert',       name:'Asteroid City — Désert',        icon:'🌵', kind:'poster', title:'ASTEROID CITY',                     style: WA_BASE + ' SCENE: 1950s pastel desert motel, atomic-age airstream trailers, gas station, distant rocky mesas, deadpan tourists in pastel, symmetrical.' },
+  { id:'ac-observatory',  name:'Asteroid City — Observatoire',  icon:'🔭', kind:'poster', title:'ASTEROID CITY',                     style: WA_BASE + ' SCENE: desert scientific outpost, pastel dome observatory, telescope, deadpan scientists in white coats, symmetrical composition, dusk sky.' },
+  { id:'ac-crater',       name:'Asteroid City — Cratère',       icon:'🪨', kind:'poster', title:'ASTEROID CITY',                     style: WA_BASE + ' SCENE: desert crater at sunset, deadpan group of 1950s tourists in pastel outfits, scientific instruments, symmetrical.' },
+  { id:'iod-japan',       name:'Isle of Dogs — Japon',          icon:'🌸', kind:'poster', title:'ISLE OF DOGS',                      style: WA_BASE + ' SCENE: Japanese city street, cherry blossoms, pastel signage, deadpan young woman in 1960s Japanese fashion, symmetrical composition.' },
+  { id:'iod-alley',       name:'Isle of Dogs — Ruelle',         icon:'🏮', kind:'poster', title:'ISLE OF DOGS',                      style: WA_BASE + ' SCENE: Japanese alleyway at night, paper lanterns, wet cobblestones, deadpan figure with a small dog, symmetrical composition, warm lamp light.' },
+  { id:'hc-paris',        name:'Hotel Chevalier — Chambre',     icon:'🛏️', kind:'poster', title:'HOTEL CHEVALIER',                   style: WA_BASE + ' SCENE: Parisian hotel room, yellow bathrobe, deadpan woman at the window, pale light through sheer curtains, symmetrical framing.' },
+  { id:'hs-theater',      name:'Henry Sugar — Théâtre',         icon:'🎩', kind:'poster', title:'THE WONDERFUL STORY OF HENRY SUGAR', style: WA_BASE + ' SCENE: London theater stage, red velvet curtain, single spotlight, deadpan narrator in a suit, symmetrical proscenium, set pieces onstage.' },
+  { id:'hs-study',        name:'Henry Sugar — Bureau',          icon:'📖', kind:'poster', title:'THE WONDERFUL STORY OF HENRY SUGAR', style: WA_BASE + ' SCENE: 1930s English study, leather books, deadpan gentleman reading, warm lamp, symmetrical composition.' },
+  { id:'swan-river',      name:'The Swan — Rivière',            icon:'🦢', kind:'poster', title:'THE SWAN',                          style: WA_BASE + ' SCENE: English countryside riverbank, a swan, deadpan boys in period clothing, willow trees, soft morning light, symmetrical composition.' },
+  { id:'poison-veranda',  name:'Poison — Véranda',              icon:'🐍', kind:'poster', title:'POISON',                            style: WA_BASE + ' SCENE: British colonial India veranda, mosquito net, whiskey glass, ceiling fan, deadpan officer in a linen suit, symmetrical framing.' },
+  { id:'rc-pub',          name:'Ratcatcher — Pub',              icon:'🍺', kind:'poster', title:'THE RAT CATCHER',                   style: WA_BASE + ' SCENE: English village pub interior, wooden beams, deadpan locals, warm ale lamps, symmetrical composition, 1950s rural England.' },
+  { id:'cc-italy',        name:'Castello Cavalcanti — Village', icon:'🏎️', kind:'poster', title:'CASTELLO CAVALCANTI',               style: WA_BASE + ' SCENE: Italian hilltop village piazza, vintage 1950s race car, cobblestones, deadpan villagers, warm Mediterranean light, symmetrical.' },
+  { id:'sym-corridor',    name:'Couloir symétrique',            icon:'🚪', kind:'poster', title:'THE GRAND BUDAPEST HOTEL',        style: WA_BASE + ' SCENE: perfectly symmetrical hotel corridor, repeated identical doors, patterned carpet converging on the vanishing point, deadpan figure at the center, warm wall sconces.' },
+  { id:'sym-portrait',    name:'Portrait symétrique',           icon:'🖼️', kind:'poster', title:'THE ROYAL TENENBAUMS',             style: WA_BASE + ' SCENE: deadpan symmetrical portrait of a woman against a perfectly patterned wallpaper, arms at the sides, direct gaze, one-point perspective.' },
+  { id:'sym-museum',      name:'Musée symétrique',              icon:'🏛️', kind:'poster', title:'THE FRENCH DISPATCH',              style: WA_BASE + ' SCENE: museum hall with framed paintings, marble floor, deadpan visitor at the center, symmetrical corridor vanishing into the distance.' },
+  { id:'sym-pool',        name:'Piscine symétrique',            icon:'🏊', kind:'poster', title:'THE LIFE AQUATIC',                 style: WA_BASE + ' SCENE: vintage hotel swimming pool, geometric tile pattern, synchronized swimmers in formation, pastel palette, symmetrical composition, mid-century.' }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const state = {
+  apiKeys: [],
+  refImage: null,
+  refName: null,
+  userPrompt: '',
+  world: null,
+  analyzed: false,
+  genderOverride: null,
+  customCategories: [],
+  catState: {},
+  taskQueue: [],
+  workersRunning: false,
+  stopRequested: false,
+  keyLastUse: {},
+  keyCooldown: {},
+  activeTab: 'custom',
+  uidCounter: 0,
+  humanLog: [],
+  debugLog: []
+};
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nowTime = () => new Date().toLocaleTimeString('fr-FR', { hour12: false });
+
+function human(msg) {
+  state.humanLog.push({ t: nowTime(), m: msg });
+  if (state.humanLog.length > 120) state.humanLog.shift();
+  const el = $('humanLatest'); if (el) el.textContent = msg;
+  renderHuman();
+}
+function renderHuman() {
+  const el = $('humanLog'); if (!el) return;
+  el.innerHTML = state.humanLog.slice(-40).map(e => '<div><span class="t">' + e.t + '</span> <span class="m">' + esc(e.m) + '</span></div>').join('');
+  el.scrollTop = el.scrollHeight;
+}
+function debug(msg, level = 'info') {
+  state.debugLog.push({ t: nowTime(), m: msg, c: level });
+  if (state.debugLog.length > DEBUG_MAX) state.debugLog.shift();
+  renderDebug();
+}
+function renderDebug() {
+  const el = $('debugLog'); if (!el) return;
+  el.innerHTML = state.debugLog.slice(-300).map(e => '<div><span class="t">' + e.t + '</span> <span class="' + e.c + '">' + esc(e.m) + '</span></div>').join('');
+  el.scrollTop = el.scrollHeight;
+}
+function toast(msg, type = 'success', dur = 2500) {
+  const t = $('toast');
+  t.className = 'toast ' + type + ' visible';
+  $('toastText').textContent = msg;
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => { t.className = 'toast ' + type; }, dur);
+}
+function setStatus(txt) {
+  const b = $('statusBar');
+  if (txt) { b.classList.add('visible'); $('statusText').textContent = txt; }
+  else b.classList.remove('visible');
+}
+function sanitize(t) { return String(t == null ? '' : t).replace(/[\u2018\u2019\u201B\u2032\u02BC]/g, "'").replace(/[\u201C\u201D\u201F\u2033]/g, '"').replace(/\u2013|\u2014/g, '-').replace(/\u2026/g, '...').replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\u00A0|\u202F/g, ' '); }
+function trunc(t, n) { if (!t) return ''; const s = String(t).replace(/\s+/g, ' ').trim(); return s.length <= n ? s : s.slice(0, n - 1) + '…'; }
+
+// ═══════════════════════════════════════════════════════════════
+// NORMALISATION SEXE (correctif)
+// ═══════════════════════════════════════════════════════════════
+function normalizeSex(rawSex) {
+  const s = String(rawSex || '').toLowerCase().trim();
+  if (/^f|fem|woman|girl|elle|she\b/.test(s)) return 'female';
+  if (/^m|mal|man\b|boy|homme|il\b|he\b/.test(s)) return 'male';
+  return 'female';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STOCKAGE
+// ═══════════════════════════════════════════════════════════════
+const _mem = {};
+let _lsOk = false, _ssOk = false;
+try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); _lsOk = true; } catch (e) {}
+try { sessionStorage.setItem('__t', '1'); sessionStorage.removeItem('__t'); _ssOk = true; } catch (e) {}
+function storageGet(k) {
+  if (_lsOk) { try { const v = localStorage.getItem(k); if (v !== null) return v; } catch (e) {} }
+  if (_ssOk) { try { const v = sessionStorage.getItem(k); if (v !== null) return v; } catch (e) {} }
+  return Object.prototype.hasOwnProperty.call(_mem, k) ? _mem[k] : null;
+}
+function storageSet(k, v) {
+  _mem[k] = String(v);
+  if (_lsOk) { try { localStorage.setItem(k, v); } catch (e) {} }
+  if (_ssOk) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+}
+function storageDel(k) {
+  delete _mem[k];
+  if (_lsOk) { try { localStorage.removeItem(k); } catch (e) {} }
+  if (_ssOk) { try { sessionStorage.removeItem(k); } catch (e) {} }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CLÉS API
+// ═══════════════════════════════════════════════════════════════
+function isValidKeyFormat(k) { return typeof k === 'string' && k.startsWith('sk-') && k.length >= 15 && k.length <= 200; }
+async function quickPing(key) {
+  try {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(API_BASE + '/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: MODEL_TEXT, messages: [{ role: 'user', content: 'ok' }], max_tokens: 1 }),
+      signal: controller.signal
+    });
+    clearTimeout(tid);
+    return res.status !== 401 && res.status !== 403;
+  } catch (e) { return null; }
+}
+async function validateAndSaveKeys() {
+  const raw = $('keysInput').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  if (raw.length === 0) { toast('Aucune clé à valider', 'error'); return; }
+  $('validateBtn').textContent = '⏳ Validation…';
+  $('validateBtn').disabled = true;
+  human('🔐 Validation de ' + raw.length + ' clé(s)…');
+  const valid = [];
+  for (let i = 0; i < raw.length; i++) {
+    const k = raw[i];
+    if (!isValidKeyFormat(k)) { debug('Clé ' + (i + 1) + ' : format invalide', 'err'); human('❌ Clé ' + (i + 1) + ' invalide'); continue; }
+    const ping = await quickPing(k);
+    if (ping === false) { debug('Clé ' + (i + 1) + ' refusée (401/403)', 'err'); human('❌ Clé ' + (i + 1) + ' refusée'); continue; }
+    valid.push(k);
+    debug('Clé ' + (i + 1) + ' OK', 'ok');
+    human('✅ Clé ' + (i + 1) + ' valide');
+  }
+  state.apiKeys = valid;
+  try { storageSet(KEYS_STORAGE, JSON.stringify(valid)); } catch (e) {}
+  const st = $('keyStatus');
+  if (valid.length > 0) {
+    st.className = 'status-line ok';
+    $('keyStatusText').textContent = valid.length + ' clé(s) enregistrée(s) · RPM ≈ ' + (valid.length * 12) + '/min';
+  } else {
+    st.className = 'status-line err';
+    $('keyStatusText').textContent = 'Aucune clé valide';
+  }
+  $('validateBtn').textContent = '🔐 Valider et enregistrer';
+  $('validateBtn').disabled = false;
+  updateKeyBadge();
+  toast(valid.length + ' clé(s) enregistrée(s)', valid.length > 0 ? 'success' : 'error', 3500);
+}
+function updateKeyBadge() {
+  $('keyBadge').textContent = state.apiKeys.length + ' validée' + (state.apiKeys.length > 1 ? 's' : '');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PACEUR RPM
+// ═══════════════════════════════════════════════════════════════
+async function acquireKey() {
+  while (!state.stopRequested) {
+    const now = Date.now();
+    const keys = state.apiKeys;
+    if (keys.length === 0) throw new Error('Aucune clé API');
+    let bestKey = null, bestAvail = Infinity;
+    for (const k of keys) {
+      const lastUse = state.keyLastUse[k] || 0;
+      const cooldown = state.keyCooldown[k] || 0;
+      const avail = Math.max(lastUse + MIN_INTERVAL_PER_KEY_MS, cooldown);
+      if (avail < bestAvail) { bestAvail = avail; bestKey = k; }
+    }
+    if (!bestKey) throw new Error('Aucune clé disponible');
+    const wait = bestAvail - now;
+    if (wait <= 0) {
+      state.keyLastUse[bestKey] = now;
+      return bestKey;
+    }
+    await sleep(Math.min(wait, 800));
+  }
+  throw new Error('Arrêt');
+}
+function markKeyCooldown(key, ms) {
+  state.keyCooldown[key] = Date.now() + ms;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IMAGE DE RÉFÉRENCE
+// ═══════════════════════════════════════════════════════════════
+function compressImg(dataUrl, maxSide) {
+  maxSide = maxSide || REF_MAX_SIDE;
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      const s = Math.min(1, maxSide / Math.max(w, h));
+      w = Math.max(1, Math.round(w * s)); h = Math.max(1, Math.round(h * s));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const x = c.getContext('2d');
+      x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+      x.drawImage(img, 0, 0, w, h);
+      let url = c.toDataURL('image/jpeg', 0.88);
+      let q = 0.88;
+      while (url.length > 1.5 * 1024 * 1024 && q > 0.5) { q -= 0.1; url = c.toDataURL('image/jpeg', q); }
+      res(url);
+    };
+    img.onerror = () => res(dataUrl);
+    img.src = dataUrl;
+  });
+}
+async function handleRefFile(f) {
+  if (!f) return;
+  if (!f.type.startsWith('image/')) { toast('Fichier non image', 'error'); return; }
+  if (f.size > 30 * 1024 * 1024) { toast('Image trop lourde (30 Mo max)', 'error'); return; }
+  setStatus('Chargement…');
+  try {
+    const dataUrl = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.onerror = rej;
+      r.readAsDataURL(f);
+    });
+    const compressed = await compressImg(dataUrl);
+    state.refImage = compressed;
+    state.refName = f.name;
+    state.world = null;
+    state.analyzed = false;
+    state.genderOverride = null;
+    try { storageSet(REF_STORAGE, JSON.stringify({ img: compressed, name: f.name })); } catch (e) {}
+    refreshRefPanel();
+    refreshGenderOverride();
+    hideAnalysis();
+    human('📷 Image chargée : ' + f.name);
+    toast('Image chargée — cliquez Analyser', 'success');
+  } catch (e) {
+    debug('Erreur image : ' + e.message, 'err');
+    toast('Chargement impossible', 'error');
+  }
+  setStatus(null);
+}
+function refreshRefPanel() {
+  const prev = $('refPreview'), img = $('refPreviewImg'), name = $('refPreviewName');
+  const btnAnalyze = $('analyzeBtn');
+  const badge = $('refBadge');
+  const has = !!state.refImage;
+  if (has) { img.src = state.refImage; name.textContent = state.refName || 'référence'; prev.classList.remove('hidden'); }
+  else { img.removeAttribute('src'); prev.classList.add('hidden'); }
+  badge.textContent = has ? '1 image' : '0 image';
+  btnAnalyze.disabled = !has;
+  btnAnalyze.textContent = state.world ? '🔁 Ré-analyser' : '🔍 Analyser l\'image';
+}
+function refreshGenderOverride() {
+  const el = $('genderOverride');
+  if (!state.world) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.querySelectorAll('.opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.gender === state.world.sex);
+  });
+}
+function applyGenderOverride(g) {
+  if (!state.world) return;
+  state.world.sex = g;
+  state.genderOverride = g;
+  renderAnalysisBox();
+  refreshGenderOverride();
+  human('⚙️ Sexe verrouillé manuellement : ' + (g === 'female' ? 'Femme' : 'Homme'));
+  debug('Override sexe → ' + g, 'warn');
+  toast('Sexe verrouillé : ' + (g === 'female' ? '♀ Femme' : '♂ Homme'), 'success', 1800);
+}
+function removeRef() {
+  state.refImage = null; state.refName = null;
+  state.world = null;
+  state.analyzed = false;
+  state.genderOverride = null;
+  storageDel(REF_STORAGE);
+  refreshRefPanel();
+  refreshGenderOverride();
+  hideAnalysis();
+  $('refInput').value = '';
+  toast('Image retirée', 'warn');
+}
+function hideAnalysis() {
+  $('analysisBox').classList.remove('visible');
+  $('analysisBox').innerHTML = '';
+}
+function renderAnalysisBox() {
+  const el = $('analysisBox');
+  if (!state.world) { hideAnalysis(); return; }
+  const w = state.world;
+  el.innerHTML =
+    '<span class="k">▸ SEXE / ÂGE</span> ' + esc(w.sex) + ' · ' + esc(w.age_range) + '\n\n' +
+    '<span class="k">▸ VISAGE</span> ' + esc(w.face_dna) + '\n\n' +
+    (w.body_dna ? '<span class="k">▸ CORPS</span> ' + esc(w.body_dna) + '\n\n' : '') +
+    (w.outfit_dna ? '<span class="k">▸ TENUE</span> ' + esc(w.outfit_dna) + '\n\n' : '') +
+    (w.decor_dna ? '<span class="k">▸ DÉCOR</span> ' + esc(w.decor_dna) + '\n\n' : '') +
+    (w.context ? '<span class="k">▸ CONTEXTE</span> ' + esc(w.context) + '\n\n' : '') +
+    (w.mood ? '<span class="k">▸ AMBIANCE</span> ' + esc(w.mood) : '');
+  el.classList.add('visible');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROMPT UI
+// ═══════════════════════════════════════════════════════════════
+function updatePromptBadge() {
+  const v = $('promptInput').value || '';
+  const words = v.trim() ? v.trim().split(/\s+/).length : 0;
+  $('promptBadge').textContent = words + ' mot' + (words > 1 ? 's' : '');
+  state.userPrompt = v;
+  try { storageSet(PROMPT_STORAGE, v); } catch (e) {}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// API — IMAGE
+// ═══════════════════════════════════════════════════════════════
+async function apiImage(prompt) {
+  const MAX_ATTEMPTS = 12;
+  let lastError = null;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (state.stopRequested) throw new Error('Arrêt');
+    let key;
+    try { key = await acquireKey(); } catch (e) { throw e; }
+    try {
+      const res = await fetch(API_BASE + '/images/generations', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: MODEL_IMAGE, prompt: sanitize(prompt), n: 1, size: IMAGE_SIZE, response_format: 'url' })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const item = data.data && data.data[0];
+        if (item && item.url) return item.url;
+        if (item && item.b64_json) return 'data:image/png;base64,' + item.b64_json;
+        throw new Error('Réponse sans image');
+      }
+      if (res.status === 429) {
+        const ra = parseInt(res.headers.get('retry-after') || '0', 10);
+        const cd = ra > 0 ? ra * 1000 : (COOLDOWN_DEFAULT_MS + attempt * 15000);
+        markKeyCooldown(key, cd);
+        debug('429 · clé en cooldown ' + Math.round(cd / 1000) + 's · retry #' + (attempt + 1), 'warn');
+        await sleep(1500 + attempt * 800);
+        continue;
+      }
+      if (res.status === 503 || res.status === 502 || res.status === 504) {
+        debug('HTTP ' + res.status + ' · retry #' + (attempt + 1), 'warn');
+        await sleep(3000 + attempt * 1500);
+        continue;
+      }
+      if (res.status === 401 || res.status === 403) {
+        debug('HTTP ' + res.status + ' clé refusée · marquage cooldown long', 'err');
+        markKeyCooldown(key, 300000);
+        await sleep(500);
+        continue;
+      }
+      const t = await res.text().catch(() => '');
+      debug('HTTP ' + res.status + ' · ' + t.slice(0, 120), 'err');
+      lastError = new Error('HTTP ' + res.status);
+      await sleep(2000 + attempt * 1200);
+    } catch (e) {
+      if (e.message === 'Arrêt') throw e;
+      lastError = e;
+      debug('Erreur réseau : ' + e.message + ' · retry #' + (attempt + 1), 'warn');
+      await sleep(2500 + attempt * 1200);
+    }
+  }
+  throw lastError || new Error('Échec après ' + MAX_ATTEMPTS + ' tentatives');
+}
+
+async function apiChat(system, user, label, maxTokens, temp) {
+  const MAX_ATTEMPTS = 8;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (state.stopRequested) throw new Error('Arrêt');
+    const key = await acquireKey();
+    try {
+      const res = await fetch(API_BASE + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL_TEXT,
+          messages: [{ role: 'system', content: sanitize(system) }, { role: 'user', content: sanitize(user) }],
+          temperature: temp !== undefined ? temp : 0.6,
+          max_tokens: maxTokens || 3000
+        })
+      });
+      if (res.ok) {
+        const d = await res.json();
+        const ch = d.choices && d.choices[0];
+        return (ch && ch.message && (ch.message.content || ch.message.reasoning_content)) || null;
+      }
+      if (res.status === 429) {
+        const ra = parseInt(res.headers.get('retry-after') || '0', 10);
+        markKeyCooldown(key, ra > 0 ? ra * 1000 : COOLDOWN_DEFAULT_MS);
+        await sleep(1500 + attempt * 800); continue;
+      }
+      if (res.status >= 500) { await sleep(3000 + attempt * 1500); continue; }
+      if (res.status === 401 || res.status === 403) { markKeyCooldown(key, 300000); continue; }
+      const t = await res.text().catch(() => '');
+      debug('CHAT ' + label + ' HTTP ' + res.status + ' ' + t.slice(0, 120), 'err');
+      await sleep(2000);
+    } catch (e) {
+      if (e.message === 'Arrêt') throw e;
+      await sleep(2500);
+    }
+  }
+  throw new Error('Chat échec');
+}
+async function apiVision(system, user, img, label, maxTokens, temp) {
+  const MAX_ATTEMPTS = 8;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    if (state.stopRequested) throw new Error('Arrêt');
+    const key = await acquireKey();
+    try {
+      const res = await fetch(API_BASE + '/chat/completions', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL_TEXT,
+          messages: [
+            { role: 'system', content: sanitize(system) },
+            { role: 'user', content: [
+              { type: 'text', text: sanitize(user) },
+              { type: 'image_url', image_url: { url: img } }
+            ] }
+          ],
+          temperature: temp !== undefined ? temp : 0.3,
+          max_tokens: maxTokens || 2200
+        })
+      });
+      if (res.ok) {
+        const d = await res.json();
+        const ch = d.choices && d.choices[0];
+        return (ch && ch.message && (ch.message.content || ch.message.reasoning_content)) || null;
+      }
+      if (res.status === 429) {
+        const ra = parseInt(res.headers.get('retry-after') || '0', 10);
+        markKeyCooldown(key, ra > 0 ? ra * 1000 : COOLDOWN_DEFAULT_MS);
+        await sleep(1500 + attempt * 800); continue;
+      }
+      if (res.status >= 500) { await sleep(3000 + attempt * 1500); continue; }
+      if (res.status === 401 || res.status === 403) { markKeyCooldown(key, 300000); continue; }
+      const t = await res.text().catch(() => '');
+      debug('VISION ' + label + ' HTTP ' + res.status + ' ' + t.slice(0, 120), 'err');
+      await sleep(2000);
+    } catch (e) {
+      if (e.message === 'Arrêt') throw e;
+      await sleep(2500);
+    }
+  }
+  throw new Error('Vision échec');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// JSON ROBUSTE
+// ═══════════════════════════════════════════════════════════════
+function repairJson(text) {
+  if (!text) return null;
+  let c = String(text).trim();
+  const fm = c.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fm) c = fm[1].trim();
+  const fb = c.indexOf('{');
+  if (fb < 0) return null;
+  c = c.slice(fb);
+  const lb = c.lastIndexOf('}');
+  if (lb > 0) c = c.slice(0, lb + 1);
+  let out = '', inS = false, esc2 = false;
+  for (let i = 0; i < c.length; i++) {
+    const ch = c[i];
+    if (esc2) { if ('"\\/bfnrtu'.includes(ch)) { out += '\\' + ch; } else out += ch; esc2 = false; continue; }
+    if (ch === '\\') { esc2 = true; continue; }
+    if (ch === '"') { inS = !inS; out += ch; continue; }
+    if (inS) {
+      if (ch === '\n') out += '\\n';
+      else if (ch === '\r') out += '\\r';
+      else if (ch === '\t') out += '\\t';
+      else if (ch.charCodeAt(0) < 32) out += '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0');
+      else out += ch;
+      continue;
+    }
+    out += ch;
+  }
+  if (esc2) out += '\\';
+  if (inS) out += '"';
+  out = out.replace(/,\s*([}\]])/g, '$1');
+  return out;
+}
+function extractJson(text) {
+  const r = repairJson(text);
+  if (!r) return null;
+  try { return JSON.parse(r); } catch (e1) {
+    try {
+      let ob = 0, ok = 0, inS = false, es = false;
+      const t = r;
+      for (let i = 0; i < t.length; i++) {
+        const ch = t[i];
+        if (es) { es = false; continue; }
+        if (ch === '\\') { es = true; continue; }
+        if (ch === '"') { inS = !inS; continue; }
+        if (inS) continue;
+        if (ch === '{') ob++; else if (ch === '}') ob--;
+        else if (ch === '[') ok++; else if (ch === ']') ok--;
+      }
+      let b = t;
+      if (inS) b += '"';
+      while (ok-- > 0) b += ']';
+      while (ob-- > 0) b += '}';
+      return JSON.parse(b);
+    } catch (e2) { return null; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ANALYSE PRÉCISE
+// ═══════════════════════════════════════════════════════════════
+const SYS_ANALYST = [
+  'You are a forensic portrait analyst and beauty editor for Vogue, specialised in cinema casting.',
+  'You receive an image of a person. You MUST describe precisely what is visible — NEVER guess or infer.',
+  '',
+  'GENDER DETECTION — READ CAREFULLY:',
+  '- Look at: jawline, brow ridge, Adam\'s apple, shoulders, chest, hips, waist, hips-to-shoulder ratio, makeup, hair styling, eyebrows, lips, lashes, jewellery, clothing cut.',
+  '- If you see: smooth jaw, high cheekbones, full lips, defined eyebrows, long hair, makeup, jewellery, fitted feminine clothing, or a typically feminine silhouette → sex = "female".',
+  '- If you see: strong square jaw, prominent brow, Adam\'s apple, broad shoulders, flat chest, short hair, no makeup → sex = "male".',
+  '- Celebrities, top models, actresses, influencers: they are almost always FEMALE. Do NOT mistake a beautiful woman for a man.',
+  '- When in ANY doubt, default to "female".',
+  '',
+  'CONTEXT: the output will be used to generate Wes Anderson cinema posters, so the face description must be photographic and precise.',
+  '',
+  'CRITICAL RULES:',
+  '- Be EXTREMELY precise: shapes, colors, textures, proportions, materials.',
+  '- Focus especially on FACE, HAIR, SKIN and BODY features that must NEVER change.',
+  '- NEVER copy the field names or example text into the output.',
+  '- Output ONLY valid JSON, no markdown, no code fences, straight apostrophes.',
+  '',
+  'FIELDS:',
+  '- sex: "female" or "male" — see GENDER DETECTION above.',
+  '- age_range: e.g. "early twenties".',
+  '- face_dna: 100-150 words. Shape of head, face, jaw, chin, forehead, cheekbones. Eyebrows. Eyes (color, shape, lashes). Nose. Lips. Skin (tone, freckles, marks, glow). Hair (color, length, texture, parting, styling). Signature expression.',
+  '- body_dna: 40-60 words. Height impression, build, waist, hips, shoulders, legs, hands, posture.',
+  '- outfit_dna: 30-60 words. EXACT clothing visible: type, cut, fabric, color, pattern, accessories.',
+  '- decor_dna: 30-60 words. EXACT environment: architecture, furniture, objects, light sources, time of day.',
+  '- context: 10-25 words. Era, place, activity.',
+  '- mood: 3-6 adjectives.'
+].join(' ');
+
+async function analyzeCharacter(dataUrl, userPrompt) {
+  const schema = {
+    sex: "female",
+    age_range: "mid twenties",
+    face_dna: "Oval face with high cheekbones, softly squared jaw, small rounded chin. Sun-kissed skin with a scatter of freckles on the nose. Dark brown eyebrows. Deep hazel eyes with long lashes. Straight narrow nose. Full natural lips. Long dark brown wavy hair, middle part. Warm confident gaze.",
+    body_dna: "Tall slender silhouette, narrow waist, defined hips, long legs, upright elegant posture, delicate hands.",
+    outfit_dna: "Form-fitting cream knit top, high-waisted beige trousers, thin gold necklace, subtle stud earrings.",
+    decor_dna: "Bright minimalist apartment, white walls, large window with sheer curtains, single monstera plant, soft natural daylight.",
+    context: "Los Angeles, contemporary, morning light, lifestyle shoot",
+    mood: "confident, radiant, elegant, fresh"
+  };
+
+  const usr = [
+    userPrompt ? ('USER CONTEXT:\n' + userPrompt + '\n') : '',
+    dataUrl ? 'Analyse the provided image with EXTREME precision. This is very likely a beautiful woman (top model, actress, influencer, celebrity). Look at the face, hair, skin, body shape, clothing, decor. Set sex = "female" unless you are 100% certain it is a man.' : 'No image. Invent a coherent, specific female character.',
+    '',
+    'Output ONE JSON object with EXACTLY these keys:',
+    'sex, age_range, face_dna, body_dna, outfit_dna, decor_dna, context, mood.',
+    '',
+    'FORMAT EXAMPLE — do NOT copy any value, only the shape:',
+    JSON.stringify(schema, null, 2),
+    '',
+    'NOW OUTPUT THE REAL JSON. Only the JSON object.'
+  ].filter(Boolean).join('\n');
+
+  const raw = dataUrl
+    ? await apiVision(SYS_ANALYST, usr, dataUrl, 'Analyse', 2800, 0.35)
+    : await apiChat(SYS_ANALYST, usr, 'Analyse', 2800, 0.6);
+  const p = extractJson(raw);
+  if (!p) throw new Error('Analyse impossible — JSON invalide');
+
+  const detectedSex = normalizeSex(p.sex);
+  debug('Sexe détecté : raw="' + p.sex + '" → ' + detectedSex, 'api');
+
+  const world = {
+    sex: detectedSex,
+    age_range: String(p.age_range || '').trim() || 'same age',
+    face_dna: String(p.face_dna || '').trim(),
+    body_dna: String(p.body_dna || '').trim(),
+    outfit_dna: String(p.outfit_dna || '').trim(),
+    decor_dna: String(p.decor_dna || '').trim(),
+    context: String(p.context || '').trim(),
+    mood: String(p.mood || '').trim()
+  };
+  if (!world.face_dna || world.face_dna.length < 40) throw new Error('Visage trop court');
+  return world;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CONSTRUCTION DU PROMPT — AFFICHE WES ANDERSON / ARGENTIQUE
+// ═══════════════════════════════════════════════════════════════
+function buildShotPrompt(cat, index, extraPrompt) {
+  const w = state.world || {};
+  const shot = cat.shots ? cat.shots[index % cat.shots.length] : null;
+  const pose = POSES[index % POSES.length];
+  const withCompanion = (index % 3) === 2;
+
+  const P = [];
+  P.push('════════ FILM STYLE — WES ANDERSON ════════');
+  P.push('PRIMARY STYLE: ' + cat.style);
+  if (shot) P.push('SHOT FRAMING: ' + shot);
+  P.push('');
+
+  P.push('════════ MEDIUM — ABSOLUTE PRIORITY ════════');
+  P.push('This image MUST be an ANALOG 35mm CINEMA PHOTOGRAPH. Shot on Kodak Vision3 500T color negative film stock. Anamorphic Panavision lens. Natural film grain visible. Halation around highlights. Slight gate weave. Analog color grading with pastel palette. Real actors on real physical sets with practical lighting. Studio-quality cinema still.');
+  P.push('STRICTLY FORBIDDEN: digital illustration, digital painting, anime, manga, vector art, flat design, concept art, digital art, AI-generated look, CGI, 3D render, plastic skin, smooth CGI textures, oversaturated colors, video-game graphics, cartoon, drawing, sketch, cel-shading.');
+  P.push('');
+
+  P.push('════════ SUBJECT — IDENTICAL EVERY TIME ════════');
+  P.push('SEX: ' + (w.sex === 'female' ? 'FEMALE (a beautiful woman)' : (w.sex === 'male' ? 'MALE (a handsome man)' : 'female')));
+  P.push('AGE: ' + (w.age_range || 'same as reference'));
+  P.push('FACE (do not alter any feature): ' + (w.face_dna || 'as reference'));
+  if (w.body_dna) P.push('BODY: ' + w.body_dna);
+  P.push('Real human being with real skin texture, real pores, real hair — a real actress photographed on set.');
+  P.push('');
+
+  P.push('════════ COSTUME ════════');
+  P.push('Invent a period-appropriate costume that PERFECTLY FITS the Wes Anderson scene described above (1930s, 1950s, 1960s, 1970s, or whichever era the scene demands). Matching accessories, real fabric with visible weave and texture. Do NOT reuse the reference outfit. The face stays identical.');
+  P.push('');
+
+  P.push('════════ POSE — WES ANDERSON DEADPAN ════════');
+  P.push('UNIQUE POSE: ' + pose + '. Perfectly symmetrical framing, one-point perspective, deadpan neutral expression, arms often straight at the sides or folded, frontal or strict profile view.');
+  P.push('');
+
+  if (withCompanion) {
+    P.push('════════ COMPANION ════════');
+    P.push('ALSO feature a second character of the OPPOSITE sex, same age range, symmetrically placed in the frame next to the subject — a real actor on the same physical set, dressed to fit the Wes Anderson scene.');
+    P.push('');
+  }
+
+  P.push('════════ SET & DECOR ════════');
+  P.push('Real physical film set: practical props, hand-painted backdrops, real furniture, real wallpaper with pattern, symmetrical composition with a strong central axis.');
+  P.push('');
+
+  P.push('════════ POSTER LAYOUT ════════');
+  P.push('Compose this as a VERTICAL 9:16 CINEMA POSTER.');
+  P.push('At the VERY TOP, in a bold condensed Futura-style typeface with generous letter-spacing, the FILM TITLE reads: "' + (cat.title || 'A WES ANDERSON FILM') + '".');
+  P.push('At the BOTTOM, a SMALL CREDITS BLOCK in tiny condensed all-caps type, classic movie-poster billing style, with invented names.');
+  P.push('Optional: a small laurel wreath or "A FILM BY WES ANDERSON" line.');
+  P.push('');
+
+  P.push('════════ ABSOLUTE RULES ════════');
+  P.push('- REAL ANALOG PHOTOGRAPH, shot on 35mm Kodak Vision3 film. Absolutely NOT digital art, NOT illustration, NOT CGI, NOT 3D render, NOT anime, NOT painting, NOT vector.');
+  P.push('- The subject is ' + (w.sex === 'male' ? 'a MAN' : 'a WOMAN') + '. Keep the gender and face IDENTICAL to the reference.');
+  P.push('- FACE is IDENTICAL to the reference (same person, same features).');
+  P.push('- Perfectly symmetrical centered composition, one-point perspective, pastel Wes Anderson palette.');
+  P.push('- Visible natural film grain, halation, subtle analog imperfections. Real photographic skin texture.');
+  P.push('- Vertical 9:16 portrait orientation.');
+  P.push('- Include the film title at the top and the small credits block at the bottom, in Futura-style typography.');
+  P.push('- NO watermark, NO logo, NO digital noise, NO plastic CGI skin, NO oversaturated colors.');
+
+  if (extraPrompt && extraPrompt.trim()) {
+    P.push('');
+    P.push('════════ EXTRA DIRECTION ════════');
+    P.push(extraPrompt.trim());
+  }
+  return P.join('\n');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TABS UI
+// ═══════════════════════════════════════════════════════════════
+function allCategories() { return CATEGORIES.concat(state.customCategories); }
+function getCategory(id) { return allCategories().find(c => c.id === id); }
+
+function renderTabs() {
+  const tabs = $('tabs');
+  tabs.innerHTML = '';
+
+  const customTab = document.createElement('div');
+  customTab.className = 'tab';
+  customTab.dataset.cat = 'custom';
+  customTab.innerHTML = '<span class="icon">✏️</span><span>Custom</span>';
+  customTab.onclick = () => switchTab('custom');
+  tabs.appendChild(customTab);
+
+  allCategories().forEach(cat => {
+    const t = document.createElement('div');
+    t.className = 'tab';
+    t.dataset.cat = cat.id;
+    const st = state.catState[cat.id];
+    const cnt = st ? st.tasks.length + '/' + st.done : '0/0';
+    t.innerHTML = '<span class="icon">' + cat.icon + '</span><span>' + esc(cat.name) + '</span><span class="count" data-count="' + cat.id + '">' + cnt + '</span>';
+    if (cat._custom) {
+      const close = document.createElement('span');
+      close.className = 'close';
+      close.textContent = '×';
+      close.onclick = (e) => { e.stopPropagation(); deleteCustomCategory(cat.id); };
+      t.appendChild(close);
+    }
+    t.onclick = () => switchTab(cat.id);
+    tabs.appendChild(t);
+  });
+}
+
+function renderTabContents() {
+  const wrap = $('tabContents');
+  wrap.innerHTML = '';
+
+  const customContent = document.createElement('div');
+  customContent.className = 'tab-content';
+  customContent.dataset.cat = 'custom';
+  customContent.innerHTML =
+    '<div class="custom-builder">' +
+    '<h3>✏️ Créer votre propre décor Wes Anderson</h3>' +
+    '<p>Décrivez votre propre scène inspirée de Wes Anderson. Le rendu respectera automatiquement la signature : photographie argentique 35 mm, symétrie parfaite, palette pastel, typographie Futura, affiche de film avec titre et crédits.</p>' +
+    '<div class="field"><label>Nom de l\'onglet</label><input type="text" id="customName" placeholder="Ex : Hôtel de montagne 1968"></div>' +
+    '<div class="field"><label>Décor (scène précise)</label><textarea id="customStyle" placeholder="Ex : hall d\'hôtel de montagne des années 1960, murs vert d\'eau, tapis rouge, cheminée en pierre, réceptionniste en uniforme vert, neige derrière les vitres…" rows="3" spellcheck="false"></textarea></div>' +
+    '<div class="field"><label>Titre du film (affiché en haut de l\'affiche)</label><input type="text" id="customTitle" placeholder="Ex : THE ALPINE HOTEL" value="A WES ANDERSON FILM"></div>' +
+    '<div class="field" style="display:flex;gap:.6rem;align-items:flex-end;flex-wrap:wrap;">' +
+    '<div style="flex:0 0 120px;"><label>Nombre d\'images</label><input type="number" id="customCount" value="5" min="1" max="50"></div>' +
+    '<button class="btn btn-violet" id="customCreateBtn" style="flex:1;min-width:200px;">▸ Créer et générer</button>' +
+    '</div>' +
+    '</div>' +
+    '<div id="customTabsList" style="font-size:.75rem;color:#a89580;"></div>';
+
+  wrap.appendChild(customContent);
+
+  allCategories().forEach(cat => {
+    const c = document.createElement('div');
+    c.className = 'tab-content';
+    c.dataset.cat = cat.id;
+    c.innerHTML =
+      '<div class="tab-control">' +
+      '<div class="field">' +
+      '<div class="info" id="info-' + cat.id + '">Prêt · 0 affiche générée</div>' +
+      '<label>Nombre d\'affiches à générer</label>' +
+      '<input type="number" id="cnt-' + cat.id + '" value="5" min="1" max="100">' +
+      '</div>' +
+      '<div class="field" style="flex:2;">' +
+      '<label>Prompt additionnel (optionnel)</label>' +
+      '<textarea id="extra-' + cat.id + '" placeholder="Ex : costume plus sombre, plan large, lumière du soir…" rows="1" spellcheck="false" style="min-height:38px;"></textarea>' +
+      '</div>' +
+      '<button class="btn btn-green" data-launch="' + cat.id + '">▸ Générer</button>' +
+      '</div>' +
+      '<div class="grid" id="grid-' + cat.id + '"></div>';
+    wrap.appendChild(c);
+  });
+
+  $('customCreateBtn').onclick = createCustomCategory;
+  document.querySelectorAll('[data-launch]').forEach(btn => {
+    btn.onclick = () => launchCategory(btn.dataset.launch);
+  });
+}
+
+function switchTab(id) {
+  state.activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === id));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.dataset.cat === id));
+}
+
+function updateTabCount(catId) {
+  const st = state.catState[catId];
+  if (!st) return;
+  const el = document.querySelector('.tab .count[data-count="' + catId + '"]');
+  if (el) el.textContent = st.tasks.length + '/' + st.done;
+  const info = $('info-' + catId);
+  if (info) {
+    info.innerHTML = 'Générées : <strong>' + st.done + '</strong> / ' + st.tasks.length + (st.tasks.length === 0 ? ' · En attente' : (st.done >= st.tasks.length ? ' · ✔ Terminé' : ' · En cours…'));
+  }
+  const tab = document.querySelector('.tab[data-cat="' + catId + '"]');
+  if (tab) {
+    tab.classList.toggle('has-content', st.tasks.length > 0);
+    tab.classList.toggle('done', st.tasks.length > 0 && st.done >= st.tasks.length);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CARTES
+// ═══════════════════════════════════════════════════════════════
+function buildCardHTML(task) {
+  let imgHtml;
+  if (task.url && task.url !== 'error') imgHtml = '<img src="' + task.url + '" loading="lazy" alt="">';
+  else if (task.url === 'error') imgHtml = '<div class="err">✕ Échec<br>' + esc(trunc(task.error || '', 60)) + '</div>';
+  else imgHtml = '<div class="load">Génération…</div>';
+
+  const rules = [];
+  rules.push('argentique 35 mm');
+  rules.push('pose #' + ((task.index % POSES.length) + 1));
+  if (task.index % 3 === 2) rules.push('+ 2e personnage');
+
+  return '<div class="photo-img">' + imgHtml + '</div>' +
+    '<div class="photo-meta">' +
+    '<span class="pbadge cat">' + task.category.icon + ' ' + esc(task.category.name) + '</span>' +
+    '<span class="pbadge num">#' + task.index + '</span>' +
+    '<span class="pbadge rule">' + esc(rules.join(' · ')) + '</span>' +
+    '<div class="ptitle">' + esc(task.category.title || task.label) + '</div>' +
+    (task.subtitle ? '<div class="psub">' + esc(task.subtitle) + '</div>' : '') +
+    '<div class="pblock">' +
+    '<div class="plabel">📸 Prompt complet</div>' +
+    '<button class="pcopy" data-copy="' + esc(task.fullPrompt) + '">Copier</button>' +
+    '<div class="ptext">' + esc(task.fullPrompt) + '</div>' +
+    '</div>' +
+    (task.url && task.url !== 'error' ? '<a class="popen" href="' + task.url + '" target="_blank" rel="noopener">Ouvrir</a>' : '') +
+    '</div>';
+}
+function attachCopyHandlers(card) {
+  card.querySelectorAll('[data-copy]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
+    const ta = document.createElement('textarea');
+    ta.value = b.dataset.copy;
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (er) {}
+    document.body.removeChild(ta);
+    toast(ok ? 'Copié' : 'Copie impossible', ok ? 'success' : 'error', 1500);
+  });
+}
+function renderCard(task) {
+  const grid = $('grid-' + task.category.id);
+  if (!grid) return;
+  const card = document.createElement('div');
+  card.className = 'photo';
+  card.dataset.uid = task.uid;
+  card.innerHTML = buildCardHTML(task);
+  grid.appendChild(card);
+  attachCopyHandlers(card);
+}
+function updateCard(task) {
+  const old = document.querySelector('.photo[data-uid="' + task.uid + '"]');
+  if (!old) { renderCard(task); return; }
+  const card = document.createElement('div');
+  card.className = 'photo';
+  card.dataset.uid = task.uid;
+  card.innerHTML = buildCardHTML(task);
+  old.replaceWith(card);
+  attachCopyHandlers(card);
+}
+
+function updateQueue() {
+  const q = $('queue');
+  q.classList.add('visible');
+  let totalTasks = 0, totalDone = 0, inQueue = state.taskQueue.length;
+  for (const id in state.catState) {
+    totalTasks += state.catState[id].tasks.length;
+    totalDone += state.catState[id].done;
+  }
+  const inProgress = totalTasks - totalDone - inQueue;
+  const rpm = state.apiKeys.length * 12;
+  q.innerHTML = '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;">' +
+    '<span style="color:#f0c890;font-weight:700;">TOTAL : ' + totalDone + ' / ' + totalTasks + ' affiches</span>' +
+    '<span style="color:#8a7a68;">file ' + inQueue + ' · en cours ' + Math.max(0, inProgress) + ' · RPM cap ≈ ' + rpm + '</span>' +
+    '</div>';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TASK BUILDER
+// ═══════════════════════════════════════════════════════════════
+function makeTask(cat, index, extraPrompt) {
+  return {
+    uid: 't' + (++state.uidCounter),
+    category: cat,
+    index: index,
+    label: cat.name + ' · #' + index,
+    subtitle: cat.title || '',
+    fullPrompt: buildShotPrompt(cat, index, extraPrompt),
+    status: 'pending',
+    url: null,
+    error: null
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILE + WORKERS
+// ═══════════════════════════════════════════════════════════════
+function enqueueTasks(tasks) {
+  state.taskQueue.push(...tasks);
+  updateQueue();
+  startDraining();
+}
+
+async function startDraining() {
+  if (state.workersRunning) return;
+  if (state.taskQueue.length === 0) return;
+  if (state.apiKeys.length === 0) { toast('Aucune clé API', 'error'); return; }
+  state.workersRunning = true;
+  state.stopRequested = false;
+  const nKeys = state.apiKeys.length;
+  const nWorkers = Math.max(2, nKeys * CONCURRENCY_PER_KEY);
+  debug('Démarrage workers : ' + nWorkers + ' (' + nKeys + ' clés × ' + CONCURRENCY_PER_KEY + ')', 'api');
+  setStatus('Génération en cours…');
+  await Promise.all(Array.from({ length: nWorkers }, (_, i) => workerLoop(i)));
+  state.workersRunning = false;
+  setStatus(null);
+  if (state.taskQueue.length > 0 && !state.stopRequested) {
+    return startDraining();
+  }
+  if (state.taskQueue.length === 0) {
+    updateQueue();
+    human('⏸ File vide — en attente de nouveaux lancements.');
+  }
+}
+
+async function workerLoop(slot) {
+  while (!state.stopRequested && state.taskQueue.length > 0) {
+    const task = state.taskQueue.shift();
+    if (!task) continue;
+    updateQueue();
+    task.status = 'generating';
+    updateCard(task);
+    try {
+      task.url = await apiImage(task.fullPrompt);
+      const st = state.catState[task.category.id];
+      if (st) st.done++;
+      updateTabCount(task.category.id);
+      debug('✔ ' + task.category.name + ' #' + task.index, 'ok');
+      human('🎬 ' + task.category.name + ' #' + task.index + ' ✔');
+    } catch (e) {
+      if (e.message === 'Arrêt') { task.status = 'pending'; return; }
+      task.url = 'error';
+      task.error = e.message;
+      const st = state.catState[task.category.id];
+      if (st) st.done++;
+      updateTabCount(task.category.id);
+      debug('✘ ' + task.category.name + ' #' + task.index + ' · ' + e.message, 'err');
+    }
+    task.status = 'done';
+    updateCard(task);
+    updateQueue();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LANCEMENT
+// ═══════════════════════════════════════════════════════════════
+function launchCategory(catId, forcedCount, forcedExtra) {
+  const cat = getCategory(catId);
+  if (!cat) return;
+  if (!state.world) { toast('Analysez d\'abord l\'image', 'error'); return; }
+  if (state.apiKeys.length === 0) { toast('Ajoutez une clé API', 'error'); return; }
+
+  const cntEl = $('cnt-' + catId);
+  const extraEl = $('extra-' + catId);
+  const n = forcedCount || Math.max(1, Math.min(100, parseInt(cntEl.value || '5', 10) || 5));
+  const extra = (forcedExtra !== undefined ? forcedExtra : (extraEl ? extraEl.value : '')) || '';
+
+  if (!state.catState[catId]) state.catState[catId] = { tasks: [], done: 0 };
+  const st = state.catState[catId];
+  const startIdx = st.tasks.length;
+
+  const newTasks = [];
+  for (let i = 0; i < n; i++) {
+    const t = makeTask(cat, startIdx + i, extra);
+    st.tasks.push(t);
+    newTasks.push(t);
+    renderCard(t);
+  }
+  updateTabCount(catId);
+  human('▸ ' + cat.name + ' · ' + n + ' affiche(s) lancée(s)' + (extra ? ' (prompt : ' + trunc(extra, 40) + ')' : ''));
+  debug('Launch ' + cat.name + ' · ' + n + ' tasks (queue=' + (state.taskQueue.length + n) + ')', 'api');
+  enqueueTasks(newTasks);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CUSTOM
+// ═══════════════════════════════════════════════════════════════
+function createCustomCategory() {
+  const name = ($('customName').value || '').trim();
+  const scene = ($('customStyle').value || '').trim();
+  const title = ($('customTitle').value || '').trim() || 'A WES ANDERSON FILM';
+  const count = Math.max(1, Math.min(50, parseInt($('customCount').value || '5', 10) || 5));
+  if (!name) { toast('Donnez un nom', 'error'); return; }
+  if (!scene) { toast('Décrivez le décor', 'error'); return; }
+  if (!state.world) { toast('Analysez d\'abord l\'image', 'error'); return; }
+
+  const id = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+  const cat = { id, name, icon: '⭐', kind: 'poster', title, style: WA_BASE + ' SCENE: ' + scene, _custom: true };
+  state.customCategories.push(cat);
+  saveCustomCategories();
+
+  renderTabs();
+  renderTabContents();
+  updateTabCount(id);
+
+  $('customName').value = '';
+  $('customStyle').value = '';
+  $('customTitle').value = 'A WES ANDERSON FILM';
+  toast('Onglet « ' + name + ' » créé', 'success');
+
+  switchTab(id);
+  launchCategory(id, count, '');
+}
+
+function deleteCustomCategory(catId) {
+  state.customCategories = state.customCategories.filter(c => c.id !== catId);
+  saveCustomCategories();
+  delete state.catState[catId];
+  if (state.activeTab === catId) state.activeTab = 'custom';
+  renderTabs();
+  renderTabContents();
+  switchTab(state.activeTab);
+  toast('Onglet supprimé', 'warn');
+}
+
+function saveCustomCategories() {
+  try {
+    const data = state.customCategories.map(c => ({ id: c.id, name: c.name, style: c.style, title: c.title, icon: c.icon, kind: c.kind }));
+    storageSet(CUSTOM_STORAGE, JSON.stringify(data));
+  } catch (e) {}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ANALYSE
+// ═══════════════════════════════════════════════════════════════
+async function runAnalysis() {
+  if (!state.refImage) { toast('Ajoutez une image', 'error'); return; }
+  if (state.apiKeys.length === 0) { toast('Ajoutez une clé API', 'error'); return; }
+  const btn = $('analyzeBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyse…';
+  setStatus('Analyse de l\'image…');
+  human('🔍 Analyse du personnage…');
+  try {
+    state.world = await analyzeCharacter(state.refImage, (state.userPrompt || '').trim());
+    state.analyzed = true;
+    renderAnalysisBox();
+    refreshRefPanel();
+    refreshGenderOverride();
+    human('✅ Analyse OK · sexe=' + state.world.sex + ' · ' + state.world.age_range);
+    toast('Analyse OK · sexe=' + state.world.sex + ' — vérifiez et ajustez si besoin', 'success', 4000);
+  } catch (e) {
+    debug('Analyse impossible : ' + e.message, 'err');
+    human('❌ Analyse impossible');
+    toast('Analyse impossible', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = state.world ? '🔁 Ré-analyser' : '🔍 Analyser l\'image';
+    setStatus(null);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+function bind() {
+  $('validateBtn').addEventListener('click', validateAndSaveKeys);
+  $('clearBtn').addEventListener('click', () => {
+    $('keysInput').value = '';
+    state.apiKeys = [];
+    state.keyLastUse = {};
+    state.keyCooldown = {};
+    storageDel(KEYS_STORAGE);
+    $('keyStatus').className = 'status-line';
+    $('keyStatusText').textContent = 'Aucune clé enregistrée';
+    updateKeyBadge();
+    toast('Clés effacées', 'warn');
+  });
+
+  $('refInput').addEventListener('change', (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (f) handleRefFile(f);
+    e.target.value = '';
+  });
+  $('removeRefBtn').addEventListener('click', removeRef);
+  $('analyzeBtn').addEventListener('click', runAnalysis);
+
+  document.querySelectorAll('.gender-override .opt').forEach(btn => {
+    btn.addEventListener('click', () => applyGenderOverride(btn.dataset.gender));
+  });
+
+  $('promptInput').addEventListener('input', updatePromptBadge);
+
+  const handle = $('panelHandle');
+  const content = $('panelContent');
+  const toggleText = $('panelToggle');
+  let open = false;
+  handle.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') return;
+    open = !open;
+    content.classList.toggle('hidden', !open);
+    toggleText.textContent = (open ? '▲' : '▼') + ' CONSOLE';
+  });
+  $('copyConsoleBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const txt = state.debugLog.map(d => d.t + ' ' + d.m).join('\n');
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (er) {}
+    document.body.removeChild(ta);
+    toast(ok ? 'Console copiée' : 'Copie impossible', ok ? 'success' : 'error', 1500);
+  });
+  $('clearConsoleBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.debugLog = [];
+    renderDebug();
+    toast('Console effacée', 'warn', 1200);
+  });
+
+  try {
+    const saved = JSON.parse(storageGet(KEYS_STORAGE) || '[]');
+    if (Array.isArray(saved) && saved.length > 0) {
+      state.apiKeys = saved;
+      $('keysInput').value = saved.join('\n');
+      $('keyStatus').className = 'status-line ok';
+      $('keyStatusText').textContent = saved.length + ' clé(s) restaurée(s) · RPM ≈ ' + (saved.length * 12) + '/min';
+    }
+  } catch (e) {}
+  try {
+    const refRaw = storageGet(REF_STORAGE);
+    if (refRaw) {
+      const d = JSON.parse(refRaw);
+      if (d && typeof d.img === 'string' && d.img.startsWith('data:image/')) {
+        state.refImage = d.img;
+        state.refName = d.name || 'référence';
+        human('📷 Image restaurée');
+      }
+    }
+  } catch (e) {}
+  try {
+    const sp = storageGet(PROMPT_STORAGE);
+    if (sp) $('promptInput').value = sp;
+  } catch (e) {}
+  try {
+    const cust = JSON.parse(storageGet(CUSTOM_STORAGE) || '[]');
+    if (Array.isArray(cust)) {
+      state.customCategories = cust.map(c => ({ id: c.id, name: c.name, icon: c.icon || '⭐', kind: c.kind || 'poster', title: c.title || 'A WES ANDERSON FILM', style: c.style, _custom: true }));
+    }
+  } catch (e) {}
+
+  allCategories().forEach(cat => { if (!state.catState[cat.id]) state.catState[cat.id] = { tasks: [], done: 0 }; });
+
+  renderTabs();
+  renderTabContents();
+  switchTab('custom');
+
+  refreshRefPanel();
+  refreshGenderOverride();
+  updatePromptBadge();
+  updateKeyBadge();
+  updateQueue();
+
+  human('👋 Prêt. Clés → image → Analyser → lancez vos décors Wes Anderson.');
+  debug('Visual.Studio Wes Anderson Lab · ' + CATEGORIES.length + ' décors · photographie argentique 35 mm', 'api');
+  debug('Taille : ' + IMAGE_SIZE + ' · modèle : ' + MODEL_IMAGE, 'api');
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+else bind();
+</script>
+</body>
+</html>
